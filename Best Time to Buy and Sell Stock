@@ -1,1 +1,79 @@
 
+--->Problem Statement <----
+You are given an array prices where prices[i] is the price of a given stock on the i th day.
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in 
+the future to sell that stock. Return the maximum profit you can achieve from this transaction. 
+If you cannot achieve any profit, return 0.
+--->APPROUCHES--> BRUTE FORCE <---
+Using nested for loop :
+To find the maximum profit, we inspect all possible (buy,sell) pairs using nested for loop.
+1. Initialize profit = 0 and n = length of price array.
+2. Run an outer loop i from 0 to n-1 to choose the buying day.
+3. Run an inner loop j from i+1 to n-1 to choose the selling day.
+4. Calculate profit = max(profit, prices[j] - prices[i]).
+5. After checking all pairs, return the final profit.
+
+---->CODE<---
+public class Main {
+   static class Solution {
+       public int maxProfit(int[] prices) {
+           int profit = 0;
+           int n = prices.length;
+           // Try every pair of buy and sell days
+           for (int i = 0; i < n; i++) {
+               int buy = prices[i];
+               for (int j = i + 1; j < n; j++) {
+                   int sell = prices[j];
+                   // Update profit if current pair gives better profit
+                   profit = Math.max(profit, sell - buy);
+               }
+           }
+           return profit;
+       }
+   }
+Time Complexity = O(n^2)
+Space Complexity = O(1)
+
+     --->APPROUCHES--> Optimized <---
+Single pass approach -->
+We track the lowest buying price and update the profit only when a better selling opportunity appears after it.
+1. Initialize buy = prices[0] and profit = 0 to track the best buying price and max profit.
+2. Since we already buy the stock at index 0 (the first day), we start traversing
+the array from index 1 (the second day) to index n - 1 (the last day) to evaluate each subsequent stock price.
+If prices[i] < buy, update buy with the lower price.
+3. Else if prices[i] - buy > profit, update profit with the new max profit.
+4. Continue this process to track the lowest buy and highest sell combination.
+5. Return the final profit, which holds the maximum achievable profit.
+Dry Run
+Input: prices = [7, 1, 5, 3, 6, 4]
+Initialization: Buy = prices[0] , Profit = 0
+Result:
+Buy on Day 1 at Price = 1
+Sell on Day 4 at Price = 6
+Profit = 6 - 1 = 5
+
+ ----> CODE <---
+public class Main {
+   static class Solution {
+       public int maxProfit(int[] prices) {
+         // Initialize the buying price with the first day's price
+       int buyPrice = prices[0];
+       int maxProfit = 0;
+       // Traverse the array from the second day to the last day
+       for (int i = 1; i < prices.length; i++) {
+           // If we find a lower price, update the buy value
+           if (prices[i] < buyPrice) {
+               buyPrice = prices[i];
+           }
+           // If selling today gives a better profit, update the profit
+           else if (prices[i] - buyPrice > maxProfit) {
+               maxProfit = prices[i] - buyPrice;
+           }
+       }
+       // Return the maximum profit found
+       return maxProfit;
+       }
+   }
+Time Complexity = O(n)
+Space Complexity = O(1)
+
